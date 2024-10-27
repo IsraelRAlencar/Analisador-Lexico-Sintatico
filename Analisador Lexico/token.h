@@ -7,8 +7,13 @@ using namespace std;
 enum Names 
 {
     UNDEF,
-    //Continuar
-    //Nomes e atributos dos tokens da linguagem
+    ID,
+    INTEGER,
+    CHAR,
+    STRING,
+    PLUS, MINUS, MULTIPLY, DIVIDE, ASSIGN, EQUAL, NOT_EQUAL, LESS_EQUAL,
+    LESS, GREATER_EQUAL, GREATER, AND, OR, NOT,
+    LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, COMMA, SEMICOLON,
     END_OF_FILE
 };
 
