@@ -1,0 +1,11 @@
+int main() {
+    int x = 10;
+    char c = 'a';
+    string s = "hello";
+    if (x == 10 && c != 'b') {
+        x = x + 1;
+    }
+    // Este e um comentario de linha
+    /* Este e um
+       comentario de bloco */
+}

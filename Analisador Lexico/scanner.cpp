@@ -1,60 +1,33 @@
 #include "scanner.h"    
 
-//Construtor que recebe uma string com o nome do arquivo 
-//de entrada e preenche input com seu conteúdo.
-Scanner::Scanner(string input)
-{
-    /*this->input = input;
-    cout << "Entrada: " << input << endl << "Tamanho: " 
-         << input.length() << endl;*/
-    pos = 0;
-    line = 1;
+Scanner::Scanner(string filename) : pos(0), line(1) {
+    ifstream inputFile(filename, ios::in);
+    string lineContent;
 
-    ifstream inputFile(input, ios::in);
-    string line;
-
-    if (inputFile.is_open())
-    {
-        while (getline(inputFile,line) )
-        {
-            this->input.append(line + '\n');
+    if (inputFile.is_open()) {
+        while (getline(inputFile, lineContent)) {
+            input.append(lineContent + '\n');
         }
         inputFile.close();
+    } else {
+        cout << "Unable to open file\n";
     }
-    else 
-        cout << "Unable to open file\n"; 
-
-    //A próxima linha deve ser comentada posteriormente.
-    //Ela é utilizada apenas para verificar se o 
-    //preenchimento de input foi feito corretamente.
-    cout << this->input;
-
 }
 
-int
-Scanner::getLine()
-{
+int Scanner::getLine() {
     return line;
 }
 
-//Método que retorna o próximo token da entrada
-Token* 
-Scanner::nextToken()
-{
-    Token* tok;
-    string lexeme;
-
+Token* Scanner::nextToken() {
     while (pos < input.length()) {
         char current = input[pos];
 
-        // Ignorar comentarios de linha
+        // Ignorar comentários
         if (current == '/' && input[pos + 1] == '/') {
             while (input[pos] != '\n') pos++;
             line++;
             continue;
         }
-
-        // Ignorar comentarios de bloco
         if (current == '/' && input[pos + 1] == '*') {
             pos += 2;
             while (!(input[pos] == '*' && input[pos + 1] == '/')) {
@@ -67,54 +40,75 @@ Scanner::nextToken()
 
         // Ignorar espaços e nova linha
         if (isspace(current)) {
-            if (current == '\n') {
-                pos++;
-                continue;
-            }
+            if (current == '\n') line++;
+            pos++;
+            continue;
         }
 
-        // Identificadores (ID)
+        // Identificadores
         if (isalpha(current) || current == '_') {
-            while (isalnum(current) || input[pos] == '_') {
-                lexeme += current;
+            string lexeme;
+            while (isalnum(input[pos]) || input[pos] == '_') {
+                lexeme += input[pos++];
             }
-
             return new Token(ID, lexeme);
         }
 
-        // Inteiros (INTEGER)
+        // Constantes inteiras
         if (isdigit(current)) {
+            string lexeme;
             while (isdigit(input[pos])) {
                 lexeme += input[pos++];
             }
-
             return new Token(INTEGER, lexeme);
         }
 
-        // Caracteres (CHAR)
+        // Constantes de caractere
         if (current == '\'') {
             pos++;
-            char charValue = input[pos++];
-
+            char charVal = input[pos++];
             if (input[pos] != '\'') lexicalError("Invalid char constant");
             pos++;
-            return new Token(CHAR, string(1, charValue));
+            return new Token(CHAR, string(1, charVal));
         }
 
-        // Strings (STRING)
+        // Constantes de string
         if (current == '\"') {
             pos++;
-
+            string lexeme;
             while (input[pos] != '\"') {
-                if (input[pos] == '\n' || pos >= input.length()) lexicalError("Invalid string constant");
+                if (input[pos] == '\n' || pos >= input.length())
+                    lexicalError("Invalid string constant");
                 lexeme += input[pos++];
             }
-
             pos++;
             return new Token(STRING, lexeme);
         }
 
+        // Operadores e símbolos especiais
         switch (current) {
+            case '+': pos++; return new Token(PLUS, "+");
+            case '-': pos++; return new Token(MINUS, "-");
+            case '*': pos++; return new Token(MULTIPLY, "*");
+            case '/': pos++; return new Token(DIVIDE, "/");
+            case '=':
+                if (input[pos + 1] == '=') { pos += 2; return new Token(EQUAL, "=="); }
+                else { pos++; return new Token(ASSIGN, "="); }
+            case '!':
+                if (input[pos + 1] == '=') { pos += 2; return new Token(NOT_EQUAL, "!="); }
+                else { pos++; return new Token(NOT, "!"); }
+            case '<':
+                if (input[pos + 1] == '=') { pos += 2; return new Token(LESS_EQUAL, "<="); }
+                else { pos++; return new Token(LESS, "<"); }
+            case '>':
+                if (input[pos + 1] == '=') { pos += 2; return new Token(GREATER_EQUAL, ">="); }
+                else { pos++; return new Token(GREATER, ">"); }
+            case '&':
+                if (input[pos + 1] == '&') { pos += 2; return new Token(AND, "&&"); }
+                else lexicalError("Invalid symbol &");
+            case '|':
+                if (input[pos + 1] == '|') { pos += 2; return new Token(OR, "||"); }
+                else lexicalError("Invalid symbol |");
             case '(': pos++; return new Token(LPAREN, "(");
             case ')': pos++; return new Token(RPAREN, ")");
             case '{': pos++; return new Token(LBRACE, "{");
@@ -123,74 +117,14 @@ Scanner::nextToken()
             case ']': pos++; return new Token(RBRACKET, "]");
             case ',': pos++; return new Token(COMMA, ",");
             case ';': pos++; return new Token(SEMICOLON, ";");
-            case '+': pos++; return new Token(PLUS, "+");
-            case '-': pos++; return new Token(MINUS, "-");
-            case '*': pos++; return new Token(MULTIPLY, "*");
-            case '/': pos++; return new Token(DIVIDE, "/");
-            case '=':
-                if (input[pos + 1] == '=') {
-                    pos += 2;
-                    return new Token(EQUAL, "==");
-                }
-                else {
-                    pos++;
-                    return new Token(ASSIGN, "=");
-                }
-            case '!':
-                if (input[pos + 1] == '=') {
-                    pos += 2;
-                    return new Token(NOT_EQUAL, "!=");
-                }
-                else {
-                    pos++;
-                    return new Token(NOT, "!");
-                }
-            case '<':
-                if (input[pos + 1] == '=') {
-                    pos += 2;
-                    return new Token(LESS_EQUAL, "<=");
-                }
-                else {
-                    pos++;
-                    return new Token(LESS, "<");
-                }
-            case '>':
-                if (input[pos + 1] == '=') {
-                    pos += 2;
-                    return new Token(GREATER_EQUAL, ">=");
-                }
-                else {
-                    pos++;
-                    return new Token(GREATER, ">");
-                }
-            case '&':
-                if (input[pos + 1] == '&') {
-                    pos += 2;
-                    return new Token(AND, "&&");
-                }
-                else {
-                    lexicalError("Invalid character &");
-                }
-            case '|':
-                if (input[pos + 1] == '|') {
-                    pos += 2;
-                    return new Token(OR, "||");
-                }
-                else {
-                    lexicalError("Invalid character |");
-                }
             default:
-                lexicalError("Invalid character " + string(1, current));
+                lexicalError("Unrecognized character: " + string(1, current));
         }
     }
-
     return new Token(END_OF_FILE, "");
 }
 
-void 
-Scanner::lexicalError(string msg)
-{
-    cout << "Error on line "<< line << ": " << msg << endl;
-    
+void Scanner::lexicalError(string msg) {
+    cout << "Error on line " << line << ": " << msg << endl;
     exit(EXIT_FAILURE);
 }

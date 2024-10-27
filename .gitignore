@@ -1,1 +1,5 @@
 *.pdf
+.vscode/settings.json
+Analisador Lexico/compiler.exe
+Analisador Lexico/.vscode/c_cpp_properties.json
+Analisador Lexico/.vscode/settings.json
