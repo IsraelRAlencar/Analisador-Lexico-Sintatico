@@ -143,13 +143,17 @@ void Parser::statement() {
             match(ELSE);
             statement();     // Processa o bloco do `else` (opcional)
         }
-    } else if (lToken->name == WHILE) {
+    } 
+    
+    else if (lToken->name == WHILE) {
         match(WHILE);
         match(LPAREN);
         expression();        // Processa a expressão condicional completa
         match(RPAREN);
         statement();
-    } else if (lToken->name == FOR) {
+    } 
+    
+    else if (lToken->name == FOR) {
         match(FOR);
         match(LPAREN);
         
@@ -157,35 +161,55 @@ void Parser::statement() {
         if (lToken->name == INT_TYPE || lToken->name == CHAR_TYPE) {
             type();               // Identifica o tipo de variável
             varDeclaration();     // Declara a variável
-        } else if (lToken->name == ID) {
+        } 
+        
+        else if (lToken->name == ID)
             assign();             // Atribuição se for uma variável já declarada
-        }
+        
         match(SEMICOLON);
 
         // Condição do for
-        if (lToken->name != SEMICOLON) expression();
+        if (lToken->name != SEMICOLON) 
+            expression();
+        
         match(SEMICOLON);
 
         // Incremento do for
-        if (lToken->name == ID) assign();
+        if (lToken->name == ID) 
+            assign();
+        
         match(RPAREN);
         statement();
-    } else if (lToken->name == RETURN) {
+    } 
+    
+    else if (lToken->name == RETURN) {
         match(RETURN);
-        if (lToken->name != SEMICOLON) expression();
+
+        if (lToken->name != SEMICOLON) 
+            expression();
+        
         match(SEMICOLON);
-    } else if (lToken->name == LBRACE) {
+    } 
+    
+    else if (lToken->name == LBRACE) {
         match(LBRACE);
-        while (lToken->name != RBRACE) statement();
+
+        while (lToken->name != RBRACE) 
+            statement();
+
         match(RBRACE);
-    } else if (lToken->name == SEMICOLON) {
-        match(SEMICOLON);
-    } else if (lToken->name == ID) {
+    } 
+    
+    else if (lToken->name == SEMICOLON) 
+        match(SEMICOLON); 
+    
+    else if (lToken->name == ID) {
         assign();
         match(SEMICOLON);
-    } else {
+    } 
+    
+    else 
         error("Erro inesperado no Statement");
-    }
 }
 
 // Assign -> ID ([ Expression ])? = Expression
