@@ -10,7 +10,8 @@
         "**/templates/**/*.html": "django-html",
         "**/base_templates/**/*.html": "django-html",
         "**/requirements{/**,*}.{txt,in}": "pip-requirements",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "new": "cpp"
     },
     "C_Cpp.default.compilerPath": "C:\\MinGW\\bin\\gcc.exe"
 }

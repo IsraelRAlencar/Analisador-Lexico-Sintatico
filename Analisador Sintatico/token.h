@@ -1,45 +1,29 @@
 #include <iostream>
-#include <ctype.h>//Funções de caracteres
 #include <string>
 
 using namespace std;
 
-enum Names 
-{
-    UNDEF,
+enum Names {
+    UNDEF = 0,
     ID,
-    LPARENTHESE,
-    RPARENTHESE,
-    LBRACE,
-    RBRACE,
-    //Continuar
-    //Nomes e atributos dos tokens da linguagem
+    INTEGER,
+    CHAR,
+    STRING,
+    PLUS, MINUS, MULTIPLY, DIVIDE, ASSIGN, EQUAL, NOT_EQUAL, LESS_EQUAL,
+    LESS, GREATER_EQUAL, GREATER, AND, OR, NOT,
+    LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, COMMA, SEMICOLON,
+    IF, ELSE, WHILE, FOR, RETURN, VOID,
+    CHAR_TYPE,   // Token para char
+    INT_TYPE,    // Token para int
     END_OF_FILE
 };
 
-class Token 
-{
-    public: 
-        int name;
-        int attribute;
-        string lexeme;
-    
-        Token(int name)
-        {
-            this->name = name;
-            attribute = UNDEF;
-        }
+class Token {
+public: 
+    int name;
+    string lexeme;
 
-        Token(int name, string l)
-        {
-            this->name = name;
-            attribute = UNDEF;
-            lexeme = l;
-        }
-        
-        Token(int name, int attr)
-        {
-            this->name = name;
-            attribute = attr;
-        }
+    Token(int name) : name(name) {}
+
+    Token(int name, string l) : name(name), lexeme(l) {}
 };
