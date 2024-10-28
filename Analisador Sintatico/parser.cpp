@@ -22,7 +22,7 @@ void Parser::match(int t) {
 
 void Parser::error(string str) {
     std::cout << "Line " << scanner->getLine() << ": " << str << std::endl;
-    // std::cout << "Token atual: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
+    std::cout << "Token atual: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
     exit(EXIT_FAILURE);
 }
 
@@ -136,73 +136,56 @@ void Parser::statement() {
     if (lToken->name == IF) {
         match(IF);
         match(LPAREN);
-        expression();
+        expression();        // Processa a expressão condicional completa
         match(RPAREN);
-        statement();
-
+        statement();         // Processa o bloco do `if`
         if (lToken->name == ELSE) {
             match(ELSE);
-            statement();
+            statement();     // Processa o bloco do `else` (opcional)
         }
-    } 
-    
-    else if (lToken->name == WHILE) {
+    } else if (lToken->name == WHILE) {
         match(WHILE);
         match(LPAREN);
-        expression();
+        expression();        // Processa a expressão condicional completa
         match(RPAREN);
         statement();
-    } 
-    
-    else if (lToken->name == FOR) {
+    } else if (lToken->name == FOR) {
         match(FOR);
         match(LPAREN);
         
-        if (lToken->name == INT_TYPE || lToken->name == ID) 
-            assign();
-
+        // Permitir declaração de variável na inicialização do for
+        if (lToken->name == INT_TYPE || lToken->name == CHAR_TYPE) {
+            type();               // Identifica o tipo de variável
+            varDeclaration();     // Declara a variável
+        } else if (lToken->name == ID) {
+            assign();             // Atribuição se for uma variável já declarada
+        }
         match(SEMICOLON);
-        
-        if (lToken->name != SEMICOLON) 
-            expression();
 
+        // Condição do for
+        if (lToken->name != SEMICOLON) expression();
         match(SEMICOLON);
-        
-        if (lToken->name == ID) 
-            assign();
 
+        // Incremento do for
+        if (lToken->name == ID) assign();
         match(RPAREN);
         statement();
-    } 
-    
-    else if (lToken->name == RETURN) {
+    } else if (lToken->name == RETURN) {
         match(RETURN);
-
-        if (lToken->name != SEMICOLON) 
-            expression();
-
+        if (lToken->name != SEMICOLON) expression();
         match(SEMICOLON);
-    } 
-    
-    else if (lToken->name == LBRACE) {
+    } else if (lToken->name == LBRACE) {
         match(LBRACE);
-
-        while (lToken->name != RBRACE) 
-            statement();
-        
+        while (lToken->name != RBRACE) statement();
         match(RBRACE);
-    } 
-    
-    else if (lToken->name == SEMICOLON) 
+    } else if (lToken->name == SEMICOLON) {
         match(SEMICOLON);
-    
-    else if (lToken->name == ID) {
+    } else if (lToken->name == ID) {
         assign();
         match(SEMICOLON);
-    } 
-    
-    else
-        error("Unexpected error in Statement");
+    } else {
+        error("Erro inesperado no Statement");
+    }
 }
 
 // Assign -> ID ([ Expression ])? = Expression
