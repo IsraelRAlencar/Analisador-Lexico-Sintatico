@@ -13,8 +13,8 @@ enum Names {
     LESS, GREATER_EQUAL, GREATER, AND, OR, NOT,
     LPAREN, RPAREN, LBRACE, RBRACE, LBRACKET, RBRACKET, COMMA, SEMICOLON,
     IF, ELSE, WHILE, FOR, RETURN, VOID,
-    CHAR_TYPE,   // Token para char
-    INT_TYPE,    // Token para int
+    CHAR_TYPE,   // Token para tipo char
+    INT_TYPE,    // Token para tipo int
     END_OF_FILE
 };
 

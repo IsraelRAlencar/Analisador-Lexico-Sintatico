@@ -1,4 +1,3 @@
-// parser.h
 #include "scanner.h"
 
 class Parser {
