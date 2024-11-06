@@ -1,5 +1,5 @@
-#include "scanner.h"
-#include "symboltable.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 class Parser {
 private:

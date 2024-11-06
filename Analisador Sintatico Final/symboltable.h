@@ -1,5 +1,5 @@
-#include <map>
-#include "stentry.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 //Classe que representa uma tabela de símbolos. A classe utiliza
 //a classe map para armazenar os símbolos. map implementa
@@ -19,6 +19,7 @@ class SymbolTable
         bool remove(string);
         void clear();
         bool isEmpty();
+        void debugPrint(); // Exibe todos os simbolos da tabela
         STEntry* get(string);
         SymbolTable* getParent();
 };

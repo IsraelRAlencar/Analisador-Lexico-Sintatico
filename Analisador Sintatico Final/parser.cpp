@@ -1,4 +1,5 @@
-#include "parser.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 Parser::Parser(string input, SymbolTable* table) : symbolTable(table) {
     scanner = new Scanner(input);
@@ -6,26 +7,13 @@ Parser::Parser(string input, SymbolTable* table) : symbolTable(table) {
 
 void Parser::advance() {
     lToken = scanner->nextToken();
-
-    if (lToken->name == ID) {
-        // Verificar se o ID já está na tabela de símbolos
-        STEntry* entry = symbolTable->get(lToken->lexeme);
-        if (entry == nullptr) {
-            // Adiciona o novo identificador à tabela de símbolos
-            symbolTable->add(new STEntry(lToken));
-        } else if (entry->reserved) {
-            // Palavra reservada encontrada em uso incorreto
-            error("Incorrect use of reserved words: " + lToken->lexeme);
-        }
-    }
-
     // Mensagem de debug: mostrar o token atual
-    std::cout << "Avancando para o proximo token: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
+    // std::cout << "Avançando para o próximo token: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
 }
 
 void Parser::match(int t) {
     // Mensagem de debug: mostrar o token esperado e o token atual
-    std::cout << "Esperado: " << t << ", Atual: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
+    // std::cout << "Esperado: " << t << ", Atual: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
     if (lToken->name == t)
         advance();
 
@@ -35,7 +23,7 @@ void Parser::match(int t) {
 
 void Parser::error(string str) {
     std::cout << "Line " << scanner->getLine() << ": " << str << std::endl;
-    std::cout << "Token atual: " << lToken->name << " (" << lToken->lexeme << ")" << std::endl;
+    std::cout << "Current token: " << tokenNames.at(lToken->name) << " (" << lToken->lexeme << ")" << std::endl;
     exit(EXIT_FAILURE);
 }
 
@@ -83,18 +71,20 @@ void Parser::function() {
     match(RBRACE);
 }
 
-// VarDeclaration -> ID ([integerconstant])?
 void Parser::varDeclaration() {
-    match(ID);
+    std::string identifier = lToken->lexeme;
 
-    //Adiciona o ID a tabela de simbolos se ele não for uma palavra reservada
-    if (symbolTable->get(lToken->lexeme) == nullptr) {
-        symbolTable->add(new STEntry(lToken));
-    } 
-    
-    else {
-        error("Identifier/Reserved word already existis in this scope: " + lToken->lexeme);
+    // Mostra estado atual da tabela de símbolos, apenas para debug
+    // std::cout << "Verificando e declarando identificador: " << identifier << std::endl;
+    // symbolTable->debugPrint();
+
+    if (symbolTable->get(identifier) != nullptr) {
+        error("Duplicated declaration of identifier: " + identifier);
+    } else {
+        symbolTable->add(new STEntry(new Token(ID, identifier), false));
     }
+
+    match(ID);  // Consome o token do identificador
 
     if (lToken->name == ASSIGN) {
         match(ASSIGN);
@@ -231,7 +221,7 @@ void Parser::statement() {
     } 
     
     else 
-        error("Erro inesperado no Statement");
+        error("Unexpected error in Statement");
 }
 
 // Assign -> ID ([ Expression ])? = Expression

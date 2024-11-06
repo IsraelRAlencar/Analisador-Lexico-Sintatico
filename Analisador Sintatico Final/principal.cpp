@@ -1,4 +1,5 @@
-#include "parser.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 int main(int argc, char* argv[]) 
 {

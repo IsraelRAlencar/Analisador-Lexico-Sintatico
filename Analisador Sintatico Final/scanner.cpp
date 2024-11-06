@@ -1,4 +1,5 @@
-#include "scanner.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 Scanner::Scanner(string filename) : pos(0), line(1) {
     ifstream inputFile(filename, ios::in);

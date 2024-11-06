@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <unordered_map>
 
 // Project Headers
 #include "token.h"         // Defines Token and enum Names

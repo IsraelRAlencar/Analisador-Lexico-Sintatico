@@ -1,5 +1,5 @@
-#include <fstream>
-#include "token.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 class Scanner 
 {

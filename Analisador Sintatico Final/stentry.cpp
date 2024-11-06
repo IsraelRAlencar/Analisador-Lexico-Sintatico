@@ -1,4 +1,5 @@
-#include "stentry.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 STEntry::STEntry()
 {}

@@ -1,4 +1,5 @@
-#include "symboltable.h"
+#include "superheader.h"  // Instead of individual includes
+
 
 //Construtor que instancia uma nova tabela sem especificar uma tabela pai.
 SymbolTable::SymbolTable()
@@ -74,4 +75,12 @@ SymbolTable*
 SymbolTable::getParent()
 {
     return parent;
+}
+
+void SymbolTable::debugPrint() {
+    std::cout << "Conteúdo atual da tabela de símbolos:" << std::endl;
+    for (const auto& entry : symbols) {
+        std::cout << "Identificador: " << entry.first << std::endl;
+    }
+    std::cout << "Fim da tabela de símbolos." << std::endl;
 }
